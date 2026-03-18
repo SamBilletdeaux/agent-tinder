@@ -14,25 +14,17 @@ const dimensionLabels: Record<string, string> = {
   workingStyle: 'Working Style',
 };
 
-const dimensionWeights: Record<string, string> = {
-  signalAlignment: '35%',
-  roleRelevance: '25%',
-  fluencyMatch: '15%',
-  actionOrientation: '15%',
-  workingStyle: '10%',
-};
-
-function ScoreBar({ label, score, weight }: { label: string; score: number; weight: string }) {
+function ScoreBar({ label, score }: { label: string; score: number }) {
   const pct = Math.round(score * 100);
   const isLow = pct < 50;
   const barColor = isLow ? 'var(--destructive)' : 'var(--secondary)';
   const textColor = isLow ? 'var(--destructive)' : 'var(--secondary)';
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className="flex flex-col gap-1.5">
       <div className="flex justify-between items-center" style={{ fontFamily: 'var(--font-ui)', fontSize: 'var(--text-caption)' }}>
         <span className="font-medium" style={{ color: 'var(--muted-fg)' }}>
-          {label} <span style={{ opacity: 0.5 }}>({weight})</span>
+          {label} <span style={{ opacity: 0.5 }}>({pct}%)</span>
         </span>
         <span className="font-bold" style={{ color: textColor }}>{pct}%</span>
       </div>
@@ -40,7 +32,7 @@ function ScoreBar({ label, score, weight }: { label: string; score: number; weig
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.8, ease: 'easeOut' }}
+          transition={{ duration: 1, ease: 'easeOut' }}
           className="h-full rounded-full"
           style={{ backgroundColor: barColor }}
         />
@@ -53,13 +45,13 @@ export default function MatchBreakdown({ match }: Props) {
   const { agent, dimensions } = match;
 
   return (
-    <div>
+    <div className="mt-4 flex-1">
       <h3
         className="font-bold mb-4 m-0"
         style={{
           fontFamily: 'var(--font-ui)',
           fontSize: 'var(--text-caption)',
-          letterSpacing: '0.2em',
+          letterSpacing: '0.25em',
           color: 'var(--muted-fg)',
           textTransform: 'uppercase',
         }}
@@ -67,33 +59,34 @@ export default function MatchBreakdown({ match }: Props) {
         Score Breakdown
       </h3>
 
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-4 mt-3">
         {Object.entries(dimensions).map(([key, value]) => (
           <ScoreBar
             key={key}
             label={dimensionLabels[key]}
             score={value}
-            weight={dimensionWeights[key]}
           />
         ))}
       </div>
 
       <div
-        className="flex items-center gap-4 mt-6"
+        className="flex items-center gap-4 mt-8"
         style={{
           fontFamily: 'var(--font-ui)',
           fontSize: 'var(--text-caption)',
           color: 'var(--muted-fg)',
         }}
       >
-        <span className="font-bold">{actionLevelLabels[agent.actionLevel]}</span>
-        <span>{agent.workingStyle}</span>
-        <span>{agent.groundedIn}</span>
+        <div className="flex gap-2">
+          <span className="font-bold">{actionLevelLabels[agent.actionLevel]}</span>
+          <span>{agent.workingStyle}</span>
+        </div>
+        <div>{agent.groundedIn}</div>
       </div>
 
       {match.antiNeedWarning && (
         <div
-          className="mt-5 px-5 py-4"
+          className="mt-6 px-5 py-4"
           style={{
             background: '#fff7ed',
             border: '1px solid #fed7aa',

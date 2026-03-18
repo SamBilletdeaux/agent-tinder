@@ -31,13 +31,13 @@ export default function AgentCard({ match }: Props) {
       {/* Top accent bar */}
       <div className="h-2 w-full flex-shrink-0" style={{ background: accent.bar }} />
 
-      <div className="flex-1 p-8 flex flex-col gap-8 overflow-y-auto">
+      <div className="flex-1 p-10 flex flex-col overflow-y-auto">
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-6">
+        <div className="flex items-start justify-between gap-6 mb-8">
           <div className="flex gap-5">
             <div
-              className="w-16 h-16 flex items-center justify-center text-4xl flex-shrink-0"
+              className="w-16 h-16 flex items-center justify-center text-4xl flex-shrink-0 shadow-sm"
               style={{
                 background: 'var(--input-bg)',
                 borderRadius: 'var(--radius-card)',
@@ -73,7 +73,7 @@ export default function AgentCard({ match }: Props) {
               style={{
                 fontFamily: 'var(--font-ui)',
                 fontSize: 'var(--text-caption)',
-                letterSpacing: '0.2em',
+                letterSpacing: '0.25em',
                 color: 'var(--muted-fg)',
               }}
             >
@@ -85,7 +85,7 @@ export default function AgentCard({ match }: Props) {
         {/* Anti-need callout */}
         {isAntiNeedCapped && (
           <div
-            className="px-5 py-4 flex items-start gap-3"
+            className="mb-8 px-5 py-4 flex items-start gap-3"
             style={{
               background: '#fff7ed',
               border: '1px solid #fed7aa',
@@ -99,52 +99,59 @@ export default function AgentCard({ match }: Props) {
           </div>
         )}
 
-        {/* Description + Tags */}
-        <div className="flex flex-col gap-4">
-          <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--muted-fg)' }}>
-            {match.explanation}
-          </p>
-          <div className="flex gap-2 flex-wrap">
-            {agent.primarySignals.map((s) => (
-              <span
-                key={s}
-                className="font-medium"
-                style={{
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: 'var(--text-caption)',
-                  background: 'var(--input-bg)',
-                  color: 'var(--fg)',
-                  border: '1px solid var(--border)',
-                  padding: '4px 12px',
-                  borderRadius: 'var(--radius-badge)',
-                }}
-              >
-                {s}
-              </span>
-            ))}
-          </div>
+        {/* Description */}
+        <p className="m-0 mb-6" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--muted-fg)' }}>
+          {match.explanation}
+        </p>
+
+        {/* Tags */}
+        <div className="flex gap-3 flex-wrap mb-8">
+          {agent.primarySignals.map((s) => (
+            <span
+              key={s}
+              className="font-medium"
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: 'var(--text-caption)',
+                background: 'var(--input-bg)',
+                color: 'var(--fg)',
+                border: '1px solid var(--border)',
+                padding: '6px 14px',
+                borderRadius: 'var(--radius-badge)',
+              }}
+            >
+              {s}
+            </span>
+          ))}
         </div>
 
-        {/* Score Breakdown */}
-        <div className="flex-1">
-          <MatchBreakdown match={match} />
-        </div>
+        {/* Score Breakdown — always visible */}
+        <MatchBreakdown match={match} />
       </div>
 
       {/* Footer */}
       <div
-        className="flex justify-between px-8 py-4 flex-shrink-0"
+        className="flex justify-between px-10 py-5 flex-shrink-0"
         style={{
           background: 'var(--card)',
-          borderTop: '1px solid var(--border)',
           fontFamily: 'var(--font-ui)',
           fontSize: 'var(--text-cta)',
           color: 'var(--muted-fg)',
           fontWeight: 500,
         }}
       >
-        <span>← Skip</span>
-        <span>Add to toolkit →</span>
+        <button
+          className="flex items-center gap-1 cursor-pointer transition-colors"
+          style={{ background: 'none', border: 'none', color: 'var(--muted-fg)', fontFamily: 'var(--font-ui)', fontSize: 'var(--text-cta)', fontWeight: 500 }}
+        >
+          ← Skip
+        </button>
+        <button
+          className="flex items-center gap-1 cursor-pointer transition-colors"
+          style={{ background: 'none', border: 'none', color: 'var(--muted-fg)', fontFamily: 'var(--font-ui)', fontSize: 'var(--text-cta)', fontWeight: 500 }}
+        >
+          Add to toolkit →
+        </button>
       </div>
     </div>
   );
