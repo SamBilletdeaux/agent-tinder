@@ -23,11 +23,16 @@ export interface Agent {
   name: string;
   emoji: string;
   tagline: string;
+  description: string;
   primarySignals: SignalType[];
   actionLevel: ActionLevel;
   workingStyle: WorkingStyle;
   groundedIn: string;
-  roleAffinity: Record<Role, number>; // 0-1
+  dataSources: string[];
+  exampleOutput: string;
+  useCases: string[];
+  limitations: string;
+  roleAffinity: Record<Role, number>;
   fluencyMin: Fluency;
 }
 
@@ -52,11 +57,11 @@ export interface MatchResult {
     workingStyle: number;
   };
   explanation: string;
+  projectRelevance: string;
   antiNeedWarning: string | null;
   isAntiNeedCapped: boolean;
 }
 
-// Signal needs/anti-needs per state
 export interface StateSignalProfile {
   needs: Partial<Record<SignalType, number>>;
   antiNeeds: Partial<Record<SignalType, number>>;

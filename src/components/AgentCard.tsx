@@ -5,6 +5,15 @@ interface Props {
   match: MatchResult;
 }
 
+const sectionHeader = {
+  fontFamily: 'var(--font-ui)',
+  fontSize: 'var(--text-caption)',
+  letterSpacing: '0.25em',
+  color: 'var(--muted-fg)',
+  textTransform: 'uppercase' as const,
+  fontWeight: 700,
+};
+
 export default function AgentCard({ match }: Props) {
   const { agent, totalScore, isAntiNeedCapped } = match;
   const pct = Math.round(totalScore * 100);
@@ -31,10 +40,10 @@ export default function AgentCard({ match }: Props) {
       {/* Top accent bar */}
       <div className="h-2 w-full flex-shrink-0" style={{ background: accent.bar }} />
 
-      <div className="flex-1 p-10 flex flex-col overflow-y-auto">
+      <div className="flex-1 p-10 flex flex-col gap-6 overflow-y-auto">
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-6 mb-8">
+        <div className="flex items-start justify-between gap-6">
           <div className="flex gap-5">
             <div
               className="w-16 h-16 flex items-center justify-center text-4xl flex-shrink-0 shadow-sm"
@@ -53,9 +62,7 @@ export default function AgentCard({ match }: Props) {
               >
                 {agent.name}
               </h2>
-              <span
-                style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h4)', color: 'var(--muted-fg)' }}
-              >
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h4)', color: 'var(--muted-fg)' }}>
                 {agent.tagline}
               </span>
             </div>
@@ -68,15 +75,7 @@ export default function AgentCard({ match }: Props) {
             >
               {pct}<span style={{ fontSize: 'var(--text-h3)', fontWeight: 400 }}>%</span>
             </div>
-            <div
-              className="font-bold mt-1"
-              style={{
-                fontFamily: 'var(--font-ui)',
-                fontSize: 'var(--text-caption)',
-                letterSpacing: '0.25em',
-                color: 'var(--muted-fg)',
-              }}
-            >
+            <div className="font-bold mt-1" style={{ ...sectionHeader, letterSpacing: '0.2em' }}>
               {accent.label}
             </div>
           </div>
@@ -85,7 +84,7 @@ export default function AgentCard({ match }: Props) {
         {/* Anti-need callout */}
         {isAntiNeedCapped && (
           <div
-            className="mb-8 px-5 py-4 flex items-start gap-3"
+            className="px-5 py-4 flex items-start gap-3"
             style={{
               background: '#fff7ed',
               border: '1px solid #fed7aa',
@@ -99,33 +98,103 @@ export default function AgentCard({ match }: Props) {
           </div>
         )}
 
-        {/* Description */}
-        <p className="m-0 mb-6" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--muted-fg)' }}>
-          {match.explanation}
-        </p>
-
-        {/* Tags */}
-        <div className="flex gap-3 flex-wrap mb-8">
-          {agent.primarySignals.map((s) => (
-            <span
-              key={s}
-              className="font-medium"
-              style={{
-                fontFamily: 'var(--font-ui)',
-                fontSize: 'var(--text-caption)',
-                background: 'var(--input-bg)',
-                color: 'var(--fg)',
-                border: '1px solid var(--border)',
-                padding: '6px 14px',
-                borderRadius: 'var(--radius-badge)',
-              }}
-            >
-              {s}
-            </span>
-          ))}
+        {/* What it does */}
+        <div>
+          <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--muted-fg)' }}>
+            {agent.description}
+          </p>
         </div>
 
-        {/* Score Breakdown — always visible */}
+        {/* Why it matters for you */}
+        <div
+          className="px-5 py-4"
+          style={{
+            background: 'var(--input-bg)',
+            borderRadius: 'var(--radius-card)',
+            borderLeft: `3px solid ${accent.bar}`,
+          }}
+        >
+          <h3 className="m-0 mb-2" style={sectionHeader}>Why this matters for you</h3>
+          <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--fg)' }}>
+            {match.projectRelevance}
+          </p>
+        </div>
+
+        {/* Example output */}
+        <div>
+          <h3 className="m-0 mb-2" style={sectionHeader}>Example Output</h3>
+          <div
+            className="px-5 py-4"
+            style={{
+              background: 'var(--input-bg)',
+              borderRadius: 'var(--radius-badge)',
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-base)',
+              color: 'var(--fg)',
+              fontStyle: 'italic',
+            }}
+          >
+            "{agent.exampleOutput}"
+          </div>
+        </div>
+
+        {/* Data sources + signals */}
+        <div className="flex gap-8">
+          <div className="flex-1">
+            <h3 className="m-0 mb-2" style={sectionHeader}>Data Sources</h3>
+            <div className="flex gap-2 flex-wrap">
+              {agent.dataSources.map((ds) => (
+                <span
+                  key={ds}
+                  className="font-medium"
+                  style={{
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: 'var(--text-caption)',
+                    background: 'var(--input-bg)',
+                    color: 'var(--fg)',
+                    border: '1px solid var(--border)',
+                    padding: '4px 10px',
+                    borderRadius: 'var(--radius-badge)',
+                  }}
+                >
+                  {ds}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 className="m-0 mb-2" style={sectionHeader}>Signals</h3>
+            <div className="flex gap-2 flex-wrap">
+              {agent.primarySignals.map((s) => (
+                <span
+                  key={s}
+                  className="font-medium"
+                  style={{
+                    fontFamily: 'var(--font-ui)',
+                    fontSize: 'var(--text-caption)',
+                    background: 'var(--input-bg)',
+                    color: 'var(--fg)',
+                    border: '1px solid var(--border)',
+                    padding: '4px 10px',
+                    borderRadius: 'var(--radius-badge)',
+                  }}
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Limitations */}
+        <div>
+          <h3 className="m-0 mb-2" style={sectionHeader}>Limitations</h3>
+          <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-caption)', color: 'var(--muted-fg)' }}>
+            {agent.limitations}
+          </p>
+        </div>
+
+        {/* Score Breakdown */}
         <MatchBreakdown match={match} />
       </div>
 
