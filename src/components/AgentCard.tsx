@@ -10,77 +10,139 @@ export default function AgentCard({ match }: Props) {
   const pct = Math.round(totalScore * 100);
 
   const accent = isAntiNeedCapped
-    ? { bar: '#f59e0b', text: '#92400e', label: 'Anti-need' }
+    ? { bar: 'var(--accent)', text: 'var(--accent)', label: 'ANTI-NEED' }
     : pct >= 70
-      ? { bar: '#10b981', text: '#065f46', label: 'Strong match' }
+      ? { bar: 'var(--secondary)', text: 'var(--secondary)', label: 'STRONG MATCH' }
       : pct >= 45
-        ? { bar: '#f59e0b', text: '#92400e', label: 'Moderate' }
-        : { bar: '#ef4444', text: '#991b1b', label: 'Low match' };
+        ? { bar: 'var(--accent)', text: 'var(--accent)', label: 'MODERATE' }
+        : { bar: 'var(--destructive)', text: 'var(--destructive)', label: 'LOW MATCH' };
 
   return (
     <div
-      className="h-full flex flex-col rounded-2xl bg-white overflow-hidden select-none border border-slate-200/80"
-      style={{ boxShadow: '0 4px 32px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04)' }}
+      className="h-full flex flex-col overflow-hidden select-none"
+      style={{
+        background: 'var(--card)',
+        color: 'var(--card-fg)',
+        borderRadius: 'var(--radius-card)',
+        boxShadow: 'var(--elevation-sm)',
+        border: '1px solid var(--border)',
+      }}
     >
-      {/* Accent bar */}
-      <div className="h-1.5 flex-shrink-0" style={{ background: accent.bar }} />
+      {/* Top accent bar */}
+      <div className="h-2 w-full flex-shrink-0" style={{ background: accent.bar }} />
 
-      <div className="flex-1 px-10 pt-10 pb-8 flex flex-col">
-        {/* Header: emoji + name + score */}
-        <div className="flex items-start justify-between mb-8">
-          <div className="flex items-center gap-5">
-            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-5xl flex-shrink-0">
+      <div className="flex-1 p-8 flex flex-col gap-8 overflow-y-auto">
+
+        {/* Header */}
+        <div className="flex items-start justify-between gap-6">
+          <div className="flex gap-5">
+            <div
+              className="w-16 h-16 flex items-center justify-center text-4xl flex-shrink-0"
+              style={{
+                background: 'var(--input-bg)',
+                borderRadius: 'var(--radius-card)',
+                border: '1px solid var(--border)',
+              }}
+            >
               {agent.emoji}
             </div>
-            <div>
-              <h3 className="text-3xl font-semibold text-slate-900 tracking-tight">{agent.name}</h3>
-              <p className="text-base text-slate-400 mt-1">{agent.tagline}</p>
+            <div className="flex flex-col">
+              <h2
+                className="font-bold tracking-tight m-0"
+                style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h2)' }}
+              >
+                {agent.name}
+              </h2>
+              <span
+                style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h4)', color: 'var(--muted-fg)' }}
+              >
+                {agent.tagline}
+              </span>
             </div>
           </div>
-          <div className="text-right flex-shrink-0 ml-6">
-            <div className="text-5xl font-bold tracking-tight" style={{ color: accent.bar }}>
-              {pct}
-              <span className="text-2xl font-semibold">%</span>
+
+          <div className="flex flex-col items-end flex-shrink-0">
+            <div
+              className="font-bold leading-none tracking-tighter"
+              style={{ fontFamily: 'var(--font-ui)', fontSize: 'var(--text-h1)', color: accent.text }}
+            >
+              {pct}<span style={{ fontSize: 'var(--text-h3)', fontWeight: 400 }}>%</span>
             </div>
-            <span className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: accent.text }}>
+            <div
+              className="font-bold mt-1"
+              style={{
+                fontFamily: 'var(--font-ui)',
+                fontSize: 'var(--text-caption)',
+                letterSpacing: '0.2em',
+                color: 'var(--muted-fg)',
+              }}
+            >
               {accent.label}
-            </span>
+            </div>
           </div>
         </div>
 
         {/* Anti-need callout */}
         {isAntiNeedCapped && (
-          <div className="mb-6 px-5 py-4 rounded-xl border border-amber-200 bg-amber-50/50 flex items-start gap-3">
-            <span className="text-amber-500 text-lg mt-0.5">⚠</span>
-            <p className="text-sm text-amber-800 leading-relaxed">
+          <div
+            className="px-5 py-4 flex items-start gap-3"
+            style={{
+              background: '#fff7ed',
+              border: '1px solid #fed7aa',
+              borderRadius: 'var(--radius-card)',
+            }}
+          >
+            <span className="text-lg mt-0.5" style={{ color: 'var(--accent)' }}>⚠</span>
+            <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: '#9a3412' }}>
               Score capped — some signals conflict with your current state.
             </p>
           </div>
         )}
 
-        {/* Explanation */}
-        <p className="text-base text-slate-500 leading-relaxed mb-6">{match.explanation}</p>
-
-        {/* Signal pills */}
-        <div className="flex flex-wrap gap-2 mb-8">
-          {agent.primarySignals.map((s) => (
-            <span
-              key={s}
-              className="px-3.5 py-1.5 rounded-lg text-sm font-medium bg-slate-50 text-slate-600 border border-slate-100"
-            >
-              {s}
-            </span>
-          ))}
+        {/* Description + Tags */}
+        <div className="flex flex-col gap-4">
+          <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--muted-fg)' }}>
+            {match.explanation}
+          </p>
+          <div className="flex gap-2 flex-wrap">
+            {agent.primarySignals.map((s) => (
+              <span
+                key={s}
+                className="font-medium"
+                style={{
+                  fontFamily: 'var(--font-ui)',
+                  fontSize: 'var(--text-caption)',
+                  background: 'var(--input-bg)',
+                  color: 'var(--fg)',
+                  border: '1px solid var(--border)',
+                  padding: '4px 12px',
+                  borderRadius: 'var(--radius-badge)',
+                }}
+              >
+                {s}
+              </span>
+            ))}
+          </div>
         </div>
 
-        {/* Score breakdown — always visible, fills remaining space */}
+        {/* Score Breakdown */}
         <div className="flex-1">
           <MatchBreakdown match={match} />
         </div>
       </div>
 
       {/* Footer */}
-      <div className="flex justify-between items-center px-10 py-4 bg-slate-50/80 border-t border-slate-100 text-sm font-medium text-slate-400 flex-shrink-0">
+      <div
+        className="flex justify-between px-8 py-4 flex-shrink-0"
+        style={{
+          background: 'var(--card)',
+          borderTop: '1px solid var(--border)',
+          fontFamily: 'var(--font-ui)',
+          fontSize: 'var(--text-cta)',
+          color: 'var(--muted-fg)',
+          fontWeight: 500,
+        }}
+      >
         <span>← Skip</span>
         <span>Add to toolkit →</span>
       </div>

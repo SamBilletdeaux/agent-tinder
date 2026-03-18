@@ -24,21 +24,25 @@ const dimensionWeights: Record<string, string> = {
 
 function ScoreBar({ label, score, weight }: { label: string; score: number; weight: string }) {
   const pct = Math.round(score * 100);
-  const color = pct >= 70 ? '#10b981' : pct >= 45 ? '#f59e0b' : '#ef4444';
+  const isLow = pct < 50;
+  const barColor = isLow ? 'var(--destructive)' : 'var(--secondary)';
+  const textColor = isLow ? 'var(--destructive)' : 'var(--secondary)';
 
   return (
-    <div className="mb-3">
-      <div className="flex justify-between text-xs mb-1.5">
-        <span className="text-slate-500 font-medium">{label} <span className="text-slate-300">({weight})</span></span>
-        <span className="font-mono font-semibold" style={{ color }}>{pct}%</span>
+    <div className="flex flex-col gap-1">
+      <div className="flex justify-between items-center" style={{ fontFamily: 'var(--font-ui)', fontSize: 'var(--text-caption)' }}>
+        <span className="font-medium" style={{ color: 'var(--muted-fg)' }}>
+          {label} <span style={{ opacity: 0.5 }}>({weight})</span>
+        </span>
+        <span className="font-bold" style={{ color: textColor }}>{pct}%</span>
       </div>
-      <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
+      <div className="h-2 w-full rounded-full overflow-hidden" style={{ background: 'var(--input-bg)' }}>
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${pct}%` }}
-          transition={{ duration: 0.6, ease: 'easeOut' }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
           className="h-full rounded-full"
-          style={{ backgroundColor: color }}
+          style={{ backgroundColor: barColor }}
         />
       </div>
     </div>
@@ -49,9 +53,21 @@ export default function MatchBreakdown({ match }: Props) {
   const { agent, dimensions } = match;
 
   return (
-    <div className="pt-5 border-t border-slate-100">
-      <div className="text-[10px] uppercase tracking-widest font-semibold text-slate-400 mb-3">Score Breakdown</div>
-      <div>
+    <div>
+      <h3
+        className="font-bold mb-4 m-0"
+        style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: 'var(--text-caption)',
+          letterSpacing: '0.2em',
+          color: 'var(--muted-fg)',
+          textTransform: 'uppercase',
+        }}
+      >
+        Score Breakdown
+      </h3>
+
+      <div className="flex flex-col gap-3">
         {Object.entries(dimensions).map(([key, value]) => (
           <ScoreBar
             key={key}
@@ -62,22 +78,30 @@ export default function MatchBreakdown({ match }: Props) {
         ))}
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <span className="px-3 py-1 rounded-lg text-xs font-medium bg-slate-50 text-slate-500 border border-slate-100">
-          {actionLevelLabels[agent.actionLevel]}
-        </span>
-        <span className="px-3 py-1 rounded-lg text-xs font-medium bg-slate-50 text-slate-500 border border-slate-100">
-          {agent.workingStyle}
-        </span>
-        <span className="px-3 py-1 rounded-lg text-xs font-medium bg-slate-50 text-slate-400 border border-slate-100">
-          {agent.groundedIn}
-        </span>
+      <div
+        className="flex items-center gap-4 mt-6"
+        style={{
+          fontFamily: 'var(--font-ui)',
+          fontSize: 'var(--text-caption)',
+          color: 'var(--muted-fg)',
+        }}
+      >
+        <span className="font-bold">{actionLevelLabels[agent.actionLevel]}</span>
+        <span>{agent.workingStyle}</span>
+        <span>{agent.groundedIn}</span>
       </div>
 
       {match.antiNeedWarning && (
-        <div className="mt-4 px-4 py-3 rounded-xl bg-amber-50/80 border border-amber-200">
-          <p className="text-xs text-amber-800 leading-relaxed">
-            <span className="font-semibold">Anti-need protection:</span> {match.antiNeedWarning}
+        <div
+          className="mt-5 px-5 py-4"
+          style={{
+            background: '#fff7ed',
+            border: '1px solid #fed7aa',
+            borderRadius: 'var(--radius-card)',
+          }}
+        >
+          <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-caption)', color: '#9a3412' }}>
+            <span className="font-bold">Anti-need protection:</span> {match.antiNeedWarning}
           </p>
         </div>
       )}
