@@ -1,123 +1,47 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import type { UserProfile, Role, StateOfReadiness, Fluency } from '../engine/types';
-import { presetPersonas, roleLabels, stateLabels, fluencyLabels } from '../data/personas';
+import { Link } from 'react-router'
+import { PERSONAS } from '../data'
+import { ThemeToggle } from './ThemeToggle'
 
-interface Props {
-  onSelect: (profile: UserProfile) => void;
-}
-
-const stateIcons: Record<StateOfReadiness, string> = {
-  scouting: '🔭',
-  evaluating: '🔍',
-  making: '🎨',
-  orchestrating: '🎼',
-};
-
-export default function PersonaSelect({ onSelect }: Props) {
-  const [showCustom, setShowCustom] = useState(false);
-  const [customRole, setCustomRole] = useState<Role>('strategy-lead');
-  const [customState, setCustomState] = useState<StateOfReadiness>('scouting');
-  const [customFluency, setCustomFluency] = useState<Fluency>('intermediate');
-  const [customName, setCustomName] = useState('');
-
-  const handleCustomSubmit = () => {
-    if (!customName.trim()) return;
-    onSelect({
-      id: 'custom',
-      name: customName.trim(),
-      role: customRole,
-      state: customState,
-      fluency: customFluency,
-      vibe: `Custom profile: ${roleLabels[customRole]} in ${stateLabels[customState]} mode`,
-      color: '#64748b',
-    });
-  };
-
+export function PersonaSelect() {
   return (
-    <div
-      className="min-h-screen flex flex-col items-center justify-center p-4"
-      style={{ background: 'var(--bg)', color: 'var(--fg)', fontFamily: 'var(--font-body)' }}
-    >
+    <div className="min-h-screen bg-background text-foreground flex flex-col items-center justify-center p-4 font-[family:var(--font-beausite)]">
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+
       <div className="max-w-4xl w-full flex flex-col items-center gap-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col items-center gap-3"
-        >
-          <div
-            className="px-3 py-1 rounded-full font-bold uppercase"
-            style={{
-              background: 'var(--fg)',
-              color: 'var(--bg)',
-              fontFamily: 'var(--font-ui)',
-              fontSize: 'var(--text-caption)',
-              letterSpacing: '0.2em',
-            }}
-          >
-            The Machine
+        <div className="flex flex-col items-center gap-2">
+          <div className="bg-foreground text-background px-3 py-1 rounded-full text-[var(--text-caption)] font-bold tracking-widest font-[family:var(--font-aeonik)] uppercase">
+            THE MACHINE
           </div>
-          <h1
-            className="font-bold text-center tracking-tight m-0"
-            style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h1)' }}
-          >
+          <h1 className="text-[var(--text-h1)] font-[family:var(--font-beausite)] font-bold text-center tracking-tight m-0">
             Agent Match
           </h1>
-          <h3
-            className="m-0"
-            style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h3)', color: 'var(--muted-fg)' }}
-          >
+          <h3 className="text-muted-foreground font-[family:var(--font-beausite)] text-[var(--text-h3)] m-0">
             Who are you today?
           </h3>
-        </motion.div>
+        </div>
 
-        {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full mt-4">
-          {presetPersonas.map((persona, i) => (
-            <motion.button
+          {PERSONAS.map((persona) => (
+            <Link
               key={persona.id}
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06 }}
-              onClick={() => onSelect(persona)}
-              className="group flex flex-col p-6 cursor-pointer text-left transition-colors"
-              style={{
-                background: 'var(--card)',
-                color: 'var(--card-fg)',
-                border: '1px solid var(--border)',
-                borderRadius: 'var(--radius-card)',
-              }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--primary)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border)'; }}
+              to={`/match/${persona.id}`}
+              className="group flex flex-col bg-card text-card-foreground border border-border p-6 rounded-[var(--radius-card)] hover:border-primary transition-colors cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-center gap-4 mb-4">
-                <div
-                  className="w-12 h-12 flex items-center justify-center rounded-full"
-                  style={{ background: 'var(--input-bg)', fontSize: 'var(--text-h3)' }}
-                >
-                  {stateIcons[persona.state]}
+                <div className="w-12 h-12 flex items-center justify-center bg-input-background rounded-full text-[var(--text-h3)]">
+                  {persona.icon}
                 </div>
                 <div className="flex flex-col gap-1">
-                  <span
-                    className="font-medium m-0"
-                    style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h4)' }}
-                  >
+                  <h4 className="font-[family:var(--font-beausite)] text-[var(--text-h4)] font-medium m-0">
                     {persona.name}
-                  </span>
+                  </h4>
                   <div className="flex flex-wrap gap-2">
-                    {[roleLabels[persona.role], stateLabels[persona.state]].map((role) => (
+                    {persona.roles.map((role) => (
                       <span
                         key={role}
-                        style={{
-                          fontFamily: 'var(--font-ui)',
-                          fontSize: 'var(--text-caption)',
-                          background: 'var(--muted)',
-                          color: 'var(--muted-fg)',
-                          padding: '2px 8px',
-                          borderRadius: 'var(--radius-badge)',
-                          opacity: 0.6,
-                        }}
+                        className="bg-muted text-muted-foreground px-2 py-0.5 rounded-[var(--radius-badge)] text-[var(--text-caption)] font-[family:var(--font-aeonik)] bg-opacity-20"
                       >
                         {role}
                       </span>
@@ -125,128 +49,22 @@ export default function PersonaSelect({ onSelect }: Props) {
                   </div>
                 </div>
               </div>
-              <p className="m-0" style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-base)', color: 'var(--muted-fg)' }}>
-                "{persona.vibe}"
+              <p className="text-muted-foreground m-0 text-[var(--text-base)] font-[family:var(--font-beausite)]">
+                {persona.description}
               </p>
-            </motion.button>
+            </Link>
           ))}
         </div>
 
-        {/* Footer */}
-        {!showCustom ? (
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            onClick={() => setShowCustom(true)}
-            className="flex items-center gap-1 cursor-pointer transition-colors font-medium"
-            style={{
-              fontFamily: 'var(--font-ui)',
-              fontSize: 'var(--text-cta)',
-              color: 'var(--muted-fg)',
-              background: 'none',
-              border: 'none',
-            }}
+        <div className="mt-4">
+          <Link
+            to="/"
+            className="text-muted-foreground hover:text-foreground transition-colors text-[var(--text-cta)] font-[family:var(--font-aeonik)] font-medium flex items-center gap-1"
           >
-            or build your own profile →
-          </motion.button>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            className="max-w-md w-full p-6"
-            style={{
-              background: 'var(--card)',
-              border: '1px solid var(--border)',
-              borderRadius: 'var(--radius-card)',
-            }}
-          >
-            <h3
-              className="font-medium mb-4 m-0"
-              style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--text-h4)' }}
-            >
-              Build Your Profile
-            </h3>
-
-            <div className="flex flex-col gap-3">
-              <input
-                type="text"
-                placeholder="Your name"
-                value={customName}
-                onChange={(e) => setCustomName(e.target.value)}
-                className="w-full px-4 py-3"
-                style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 'var(--text-base)',
-                  background: 'var(--input-bg)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-button)',
-                  color: 'var(--fg)',
-                  outline: 'none',
-                }}
-              />
-
-              <div className="grid grid-cols-3 gap-3">
-                {([
-                  ['Role', customRole, (v: string) => setCustomRole(v as Role), roleLabels],
-                  ['State', customState, (v: string) => setCustomState(v as StateOfReadiness), stateLabels],
-                  ['Fluency', customFluency, (v: string) => setCustomFluency(v as Fluency), fluencyLabels],
-                ] as const).map(([label, value, setter, labels]) => (
-                  <div key={label}>
-                    <label
-                      className="block mb-1.5"
-                      style={{
-                        fontFamily: 'var(--font-ui)',
-                        fontSize: 'var(--text-caption)',
-                        letterSpacing: '0.15em',
-                        color: 'var(--muted-fg)',
-                        fontWeight: 500,
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {label}
-                    </label>
-                    <select
-                      value={value}
-                      onChange={(e) => setter(e.target.value)}
-                      className="w-full px-3 py-2"
-                      style={{
-                        fontFamily: 'var(--font-body)',
-                        fontSize: 'var(--text-base)',
-                        background: 'var(--input-bg)',
-                        border: '1px solid var(--border)',
-                        borderRadius: 'var(--radius-button)',
-                        color: 'var(--fg)',
-                        outline: 'none',
-                      }}
-                    >
-                      {Object.entries(labels).map(([k, v]) => (
-                        <option key={k} value={k}>{v as string}</option>
-                      ))}
-                    </select>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                onClick={handleCustomSubmit}
-                disabled={!customName.trim()}
-                className="w-full py-3 font-medium cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                style={{
-                  background: 'var(--primary)',
-                  color: 'var(--primary-fg)',
-                  fontFamily: 'var(--font-ui)',
-                  fontSize: 'var(--text-base)',
-                  borderRadius: 'var(--radius-button)',
-                  border: 'none',
-                }}
-              >
-                Start Matching
-              </button>
-            </div>
-          </motion.div>
-        )}
+            or build your own profile <span aria-hidden="true">&rarr;</span>
+          </Link>
+        </div>
       </div>
     </div>
-  );
+  )
 }

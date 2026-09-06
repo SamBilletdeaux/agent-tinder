@@ -134,6 +134,20 @@ export function SwipeCard({ match, onSwipe }: SwipeCardProps) {
           </div>
         </div>
 
+        {/* Use cases */}
+        {match.useCases.length > 0 && (
+          <div>
+            <h3 className={cn(sectionHeader, 'mb-2')}>Best Use Cases</h3>
+            <ul className="m-0 pl-5 flex flex-col gap-2">
+              {match.useCases.map((useCase) => (
+                <li key={useCase} className="text-[var(--text-caption)] font-[family:var(--font-beausite)] text-muted-foreground">
+                  {useCase}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
         {/* Limitations */}
         <div>
           <h3 className={cn(sectionHeader, 'mb-2')}>Limitations</h3>
